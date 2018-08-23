@@ -14,7 +14,7 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var conn = mysql.createConnection({
   host : 'localhost',
   user : 'root',
-  password : '!@#u3e9arer',
+  password : '',
   database : 'facechat',
   charset : 'utf8'
 });
