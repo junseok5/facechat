@@ -1,0 +1,42 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="msapplication-tap-highlight" content="no" />
+
+	<title>Facechat</title>
+	<link rel="shortcut icon" type="image⁄x-icon" href="img/logo2.png">
+
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<link rel="apple-touch-icon" href="img/logo2.png" />
+	<link rel="apple-touch-startup-image" href="img/startup.png">
+
+	<link rel="shortcut icon" href="img/logo2.png" />
+
+	<link href="http://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="css/bamboo.css">
+
+</head>
+
+<body>
+	<div id="console">FaceChat</div>
+		<div id="container">
+				<% include ./header.ejs %>
+
+				<% if(!locals.displayName) { %>
+				<% include ./content.ejs %>
+				<%	} else { %>
+				<%	 include ./content_login.ejs %>
+				<% } %>
+		</div>
+</body>
+
+</html>

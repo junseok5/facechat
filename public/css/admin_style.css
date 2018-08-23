@@ -1,0 +1,198 @@
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
+
+h3 {
+  color: #2C8B25;
+}
+#container {
+  position: relative;
+  background-color: #f9f9f9;
+  -webkit-overflow-scrolling: touch;
+}
+.header {
+  position: inherit;;
+  width: 100%;
+  height: 50px;
+  margin-bottom: 15px;
+  color: #fff;
+  background-color: #6799FF;
+  text-align: center;
+}
+.userList {
+  position: inherit;;
+  width: 100%;
+  height: 700px;
+  margin-bottom: 75px;
+  background-color: #E6E6E6;
+}
+.currentUserList {
+  position: inherit;
+  width: 100%;
+  height: 700px;
+  margin-bottom: 75px;
+  background-color: #F8F8F8;
+}
+.reportUserList {
+  position: inherit;
+  width: 100%;
+  height: 700px;
+  margin-bottom: 75px;
+  background-color: #E6E6E6;
+}
+.logo {
+  position: inherit;
+  width: 100%;
+  height: 700px;
+  margin-bottom: 75px;
+  background-color: #F8F8F8;
+}
+
+/* list container, header */
+.listContainer {
+  position: inherit;
+  float: left;
+  width: 33.3%;
+  height: 100%;
+  text-align: center;
+}
+.reportContainer {
+  width: 100%;
+  text-align: center;
+}
+.listHeader {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 50px;
+  padding-bottom: 10px;
+  background-color: #FFFFE4;
+  border: 2px solid #fff;
+}
+.listHeader h2 {
+  font-size: 20px;
+}
+
+/* currentUserList Header */
+._CurrentConn {
+  background-color: #EBE8FF;
+}
+._TodayConn {
+  background-color: #EBE8FF;
+}
+._Ready {
+  background-color: #EBE8FF;
+}
+
+/* reportUserList Header */
+._ReportList {
+  background-color: #FFDFFF;
+}
+._ConductedList {
+  background-color: #FFDFFF;
+}
+._ReportNum {
+  background-color: #FFDFFF;
+}
+/* userList Container */
+.Month {
+  background-color: #C2C2C2;
+}
+.TodayConn {
+  background-color: #D4D4D4;
+}
+.ConductedList {
+  background-color: #C2C2C2;
+}
+.listUser {
+  border: 1px solid #fff;
+  padding: 15px 0 0 0;
+}
+
+/* content */
+.listContent {
+  position: absolute;
+  top: 50px;
+  left: 0px;
+  width: 100%;
+  height: 650px;
+  margin: 15px auto;
+
+  overflow: scroll;
+}
+.listContent p {
+  font-family: 'Nanum Gothic', serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+.listContent img {
+  width: 50px;
+  height: 50px;
+}
+.listContent a,
+.listContent a:visited,
+.listContent a:focus {
+  text-decoration: none;
+  color: #000;
+}
+.listContent a:hover {
+  color: #fff;
+}
+
+/* currentUserList container */
+.currentUserList .listContainer{
+  width: 50%;
+}
+.todayUserLog {
+  border: 1px solid #fff;
+  padding: 15px 0 0 0;
+}
+.date {
+  color: #fff;
+}
+
+
+/* repo */
+.repoList {
+  border: 1px solid #fff;
+  padding-top: 8px;
+}
+
+.repoFrom_chat {
+
+}
+.repoFrom_chat h4 {
+  color: #4374D9;
+}
+.repoTo_chat h4 {
+  color: #FF7171;
+}
+.repoList_chat {
+  border: 1px solid #5D5D5D;
+}
+.repo_personal_wrapper {
+  border: 5px solid #fff;
+}
+/* stop */
+.stopHeader {
+  background-color: #FFdFFF;
+}
+
+@media only screen and (min-width: 768px) {
+  .userList {
+    float: left;
+    width: 25%;
+  }
+  .currentUserList {
+    float: left;
+    width: 25%;
+  }
+  .reportUserList {
+    float: left;
+    width: 25%;
+  }
+  .logo {
+    float: left;
+    width: 25%;
+  }
+}

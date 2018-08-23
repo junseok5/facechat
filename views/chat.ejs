@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>facechat</title>
+    <link rel="shortcut icon" type="image⁄x-icon" href="img/logo2.png">
+    <link rel="stylesheet" href="css/chat_style.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+    <!-- socket start -->
+    <script type="text/javascript">
+      var socket = io.connect('http://localhost:3000');
+      var mycode = '';
+
+      var myname = '<%= displayName %>';
+      if(myname.length > 10) {
+        var addPoint = ' ··';
+        myname = myname.substring(0,11);
+        myname += addPoint;
+      }
+      var myphoto = '<%= photos %>';
+      var myprofileurl = '<%= profileUrl %>';
+      var myid = '<%= id %>';
+      var otherid = '';
+
+      var chat_count = 0;
+
+      $(document).ready(function(){
+          socket.on('connected', function(){
+              console.log('socket.io server and clients connected');
+          });
+
+          // 매칭완료되었을 때
+          socket.on('completeMatch', function(data){
+              console.log('clients side completeMatch!');
+              var d = new Date();
+              var currentHours = addZeros(d.getHours(), 2); // 시간이 한자리 수 일 때 앞에 0을 추가하는 함수
+              var currentMinutes = addZeros(d.getMinutes(), 2);
+              mycode = makeid();
+
+              $('#other_profile').empty();  // 상대 프로필 사진 초기화
+              $('#other_name').empty();
+              $('#other_profile').append('<a href="/"><span class="demoSpan1"></span></a>');  // 지워진 소스 복구
+
+              $('.push_alam').fadeIn('fast'); // push alam
+              $('.push_new').fadeIn('fast');
+
+              $('.chatting_end').fadeIn('fast');  // 나가기 버튼 보이기
+              $('.chatting_report').fadeIn('fast'); // 신고 아이콘 보이기
+
+              $('.wait').hide();
+              $('.chat').fadeIn('fast');
+          });
+
+          socket.on('disconnect', function(data){
+            console.log('disconnect');
+            chat_count = 0;
+            mycode = '';  // 코드 초기화
+            socket.emit('cancelRequest'); // 큐를 돌리다가 disconnect 큐를 제거하기 위해 추가
+          });
+
+          // 대화를 받았을 때
+          socket.on('receiveMessage', function(data){
+              var d = new Date();
+              var currentHours = addZeros(d.getHours(), 2); // 시간이 한자리 수 일 때 앞에 0을 추가하는 함수
+              var currentMinutes = addZeros(d.getMinutes(), 2);
+
+              // 받은 채팅이 자기 자신일 때
+              if(mycode === data.mycode){
+                $('.chatResult').append('<li class="self"><div class="avatar"><img src="<%= photos %>" draggable="false"/></div><div class="chat_name"></div><div class="msg"><p>' + data.message +'</p><time>'+currentHours+':'+currentMinutes+'</time></div></li>');
+              } else {  //자기 자신이 아닐 때
+                $('.chatResult').append('<li class="other"><div class="avatar"><img src="'+data.photos+'" draggable="false"/></div><div class="chat_name"></div><div class="msg"><p>' + data.message +'</p><time>'+currentHours+':'+currentMinutes+'</time></div></li>');
+                chat_count++;
+                if(chat_count === 1){   // 상대방이 첫 메세지를 보냈을 시
+                    otherid = data.id;
+                    $('#sample_profile').hide();  // sample 숨기기
+                    $('#sample_name').hide();  // sample name 숨기기
+                    $('#other_profile').fadeIn('slow'); // 상대방의 프로필 보이기
+                    $('#other_name').fadeIn('slow');  // 상대방의 이름 보이기
+                    $('.last').append(currentHours+':'+currentMinutes); // 채팅 시작 시간 보이기
+                    $('#other_profile').append('<img src="'+data.photos+'" draggable="false"/>');
+                    $('#other_name').append('<a href="'+data.url+'" title="페이스북 이동" target="_balnk">'+data.name+'</a>');
+                    chat_count++; // 중요 코드
+                }
+                socket.emit('save chat', { myid: myid, otherid: otherid, message: data.message });
+              }
+              $("html, body").animate({ scrollTop: $(document).height()-$(window).height() });  // 스크롤 자동 내리기
+          });
+
+          socket.on('chat end', function(data){
+            console.log('chat end');
+            mycode = '';
+            chat_count = 0;
+            $('.push_new').fadeOut('fast');
+            $('.push_out').fadeIn('fast');
+            $('.chat').fadeOut('fast');
+            $('.lobby').fadeIn('fast');
+            $('.chatting_end').fadeOut('fast'); // 나가기 아이콘 숨기기
+            $('.chatting_report').fadeOut('fast');  // 신고 아이콘 숨기기
+            $('.chatting_add_space').hide();  // 여백 숨기기
+            socket.emit('room out');
+          });
+
+          // 랜덤요청 시
+          $('#btnRequestRandomChat').click(function(){
+              $('.lobby').fadeOut('fast');
+              $('.wait').fadeIn('slow');
+
+              $('.push_out').fadeOut('fast');
+              $('.push_alam').fadeOut('fast');
+
+              $('#chatResult').empty(); // 채팅창 초기화
+              $('.last').empty(); // 매치 되었을 때의 시간 초기화
+
+              $('#other_profile').fadeOut('fast');
+              $('#other_name').fadeOut('fast');
+              $('#sample_profile').fadeIn('fast');
+              $('#sample_name').fadeIn('fast');
+              socket.emit('requestRandomChat');
+          });
+
+          // 채팅 도중 채팅 나가기 버튼 눌렀을 시
+          $('#chatting_end').click(function(){
+            socket.emit('chat out');
+          });
+          // 엔터입력 시
+          $('#inputMessage').keyup(function(e){
+              if (e.keyCode == 13){
+                  send();
+              }
+          });
+          // 아이콘 눌러서 채팅 전송
+          $('#inputMessage_click').click(function(){
+              send();
+          })
+          // 채팅 내용 전송 시
+          $('#btnChat').click(function(){
+              send();
+          });
+          // 신고 아이콘 클릭 시
+          $('#chatting_report').click(function(){
+              $('#report_popup').fadeIn('fast');
+          });
+          // 신고 취소 시
+          $('.report_cancel').click(function(){
+              $('#report_popup').fadeOut('fast');
+          });
+          // 신고 버튼 클릭 시
+          $('#report_on').click(function(){
+              var repo_val= $("#report_list option:selected").val();  // option 값 받아오기
+              console.log(repo_val);
+              socket.emit('save report', {repo_val: repo_val, myid: myid, otherid: otherid});
+              $('.chatting_report').fadeOut('fast');  // 신고 아이콘 사라지기
+              $('.chatting_add_space').show();  // 여백 맞추기
+              $('#report_popup').fadeOut('fast'); // 신고 팝업 사라지기
+              $('#report_since').fadeIn('fast');  // 신고 접수 확인 보이기
+          });
+          // 신고 내용 접수 확인
+          $('.report_confirm').click(function(){
+              $('#report_since').fadeOut('fast');
+          });
+      });
+
+      // 메세지 보내기
+      function send(){
+          var message = $('#inputMessage').val();
+          if (message.length < 1){
+              alert('내용을 입력하세요.');
+              return;
+          }
+          if (message.length > 299){
+              alert('최대 300자입니다.');
+              return;
+          }
+          socket.emit('sendMessage', { message:message, id: myid, mycode: mycode, name: myname, photos: myphoto, url: myprofileurl });
+          $('#inputMessage').val('');
+      }
+
+      // 시계 자릿수 맞춰주기
+      function addZeros(num, digit) {
+    	  var zero = '';
+    	  num = num.toString();
+    	  if (num.length < digit) {
+    	    for (i = 0; i < digit - num.length; i++) {
+    	      zero += '0';
+    	    }
+    	  }
+    	  return zero + num;
+      }
+
+      //  개인의 고유 문자를 부여
+      function makeid(){
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for( var i=0; i < 5; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
+      }
+
+    </script>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="menu">
+              <div class="back_logo" id="sample_profile"><a href="/"><span class="demoSpan1"></span></a><img src="/img/logo.png" draggable="false"/></div>
+              <div class="back con" id="other_profile" style="display: none"><a href="/"><span class="demoSpan1"></span></a></div>
+              <div class="name_logo" id="sample_name">FaceChat</div>
+              <div class="name con" id="other_name" style="display: none"></div>
+              <div class="last"></div>
+              <div class="chatting_option">
+                  <div id="chatting_report" class="chatting_report" style="display: none"><img src="/img/report_icon.png" draggable="false"/></div>
+                  <div class="chatting_add_space" style="display: none"></div>
+                  <div id="chatting_end" class="chatting_end" style="display: none"><img src="/img/chatout_icon.png" draggable="false"/></div>
+              </div>
+      </div>
+
+      <div class="report" id="report_popup" style="display: none">
+          <h3>신고 사유를 선택해주세요.</h2>
+          <form name="report_add">
+            <div class="report_option">
+                <select name="report_list" id="report_list">
+                  <option value="repo1" stud_name='repo1' selected>스팸 또는 광고성 메세지</option>
+                  <option value="repo2" stud_name='repo2'>성적으로 불쾌감을 주는 행동</option>
+                  <option value="repo3" stud_name='repo3'>욕설 또는 공격적인 언행</option>
+                  <option value="repo4" stud_name='repo4'>협박을 하거나 명예를 훼손</option>
+                </select>
+            </div>
+            <div class="report_on" id="report_on">확인</div>
+            <div class="report_cancel">취소</div>
+          </form>
+      </div>
+      <div class="report_since" id="report_since" style="display: none">
+          <h3>신고가 성공적으로 접수되었습니다.</h3>
+          <div class="report_confirm">확인</div>
+      </div>
+
+      <div class="push_alam" style="display: none">
+          <div class="push_new" id="push_new" style="display: none"><p>새로운 상대와 연결되었습니다!</p></div>
+          <div class="push_out" id="push_out" style="display: none"><p>대화가 종료되었습니다.</p></div>
+          <div class="cssload-wave" id="push_typing" style="display: none">
+	           <span></span><span></span><span></span><span></span>
+          </div>
+      </div>
+
+      <ol class="chatResult" id="chatResult">
+          <li class="other">
+              <div class="avatar"><img src="/img/sample_profile2.jpg" draggable="false"/></div>
+            <div class="msg">
+              <p>반갑습니다!</p>
+              <p>첫 대화를 시작해보세요.</p>
+              <time>20:17</time>
+            </div>
+          </li>
+          <li class="self">
+              <div class="avatar"><img src="/img/sample_profile2.jpg" draggable="false"/></div>
+            <div class="msg">
+              <p>첫 메세지를 전달할 시</p>
+              <p>자신의 프로필이 상대방에게 보입니다.</p>
+              <time>20:18</time>
+            </div>
+          </li>
+      </ol>
+
+      <div class="chat" style="display: none">
+        <input class="textarea" id="inputMessage" type="text" placeholder="Type here!"/>
+        <div class="chat_send" id="inputMessage_click"><img src="/img/send_icon.png" draggable="false"/></div>
+      </div>
+
+      <div class="wait" style="display: none">
+        <div id="loading"></div>
+        <div class="loading_">상대를 찾는 중..</div>
+      </div>
+
+      <div class="lobby">
+        <div class="btn_request" id="btnRequestRandomChat">NEW</div>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

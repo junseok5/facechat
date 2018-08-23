@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Facechat</title>
+    <link rel="shortcut icon" type="image⁄x-icon" href="img/logo2.png">
+    <link rel="stylesheet" href="css/admin_style.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+      var socket = io.connect('http://localhost:3000');
+      var repoUser = '<%= userrepo.length %>';
+
+      $(document).ready(function(){
+          socket.on('connected', function(){
+              console.log('socket.io server and clients connected');
+          });
+
+          // 현재 접속자 수 나타내기
+          socket.on('current user', function(data){
+              console.log('current user');
+              $('#currentusernum').empty();
+              $('#currentusernum').append('<h3>접속자 수: '+data.socketCount+'</h3>');
+          });
+
+          // 오늘 접속자 로그
+          socket.on('today user', function(data){
+              console.log('today user');
+              var m = 0;
+              $('#todayuser').empty();
+              $('#todayuser').append('<h3>오늘접속로그 수: '+data.rows.length+'</h3>');
+              for(var i=0; i<data.rows.length; i++){
+                if(data.rows[i].gender === 'male') m++;
+              }
+              $('#todayuser').append('<h3>남자: '+m+' 여자: '+(data.rows.length - m)+'</h3>');
+              for(var i=0; i<data.rows.length; i++){
+                $('#todayuser').append('<div class="todayUserLog"><img src="'+data.rows[i].photos+'"><a href="'+data.rows[i].profileUrl+'" target="_balnk"><p>'+data.rows[i].displayName+'</p></a><p class="date">'+data.rows[i].date+'</p></div>');
+              }
+          });
+
+          // 신고 유저의 챗 목록
+          socket.on('report chatlist', function(data){
+            console.log('reported chatlist');
+          });
+
+          socket.on('date register', function(data){
+            // 이번 달 가입자
+            console.log('date register');
+            var m= 0;
+            $('#monthRegister').append('<h3>가입자 수: '+data.monthR.length+'</h3>');
+            // 성별 비율 가져오기
+            for(var i=0; i<data.monthR.length; i++){
+              if(data.monthR[i].gender === 'male'){
+                m++;
+              }
+            }
+            $('#monthRegister').append('<h3>남: '+m+' 여: '+(data.monthR.length - m)+'</h3>');
+            // 가입자 목록 나타내기
+            for(var i=0; i<data.monthR.length; i++){
+              $('#monthRegister').append('<p><img src="'+data.monthR[i].photos+'" /><a href="'+data.monthR[i].profileUrl+'">'+data.monthR[i].displayName+'</a></p>');
+            }
+
+            // 오늘 가입자
+            var m= 0;
+            $('#dayRegister').append('<h3>가입자 수: '+data.dayR.length+'</h3>');
+            // 성별 비율 가져오기
+            for(var i=0; i<data.dayR.length; i++){
+              if(data.dayR[i].gender === 'male'){
+                m++;
+              }
+            }
+            $('#dayRegister').append('<h3>남: '+m+' 여: '+(data.dayR.length - m)+'</h3>');
+            // 가입자 목록 나타내기
+            for(var i=0; i<data.dayR.length; i++){
+              $('#dayRegister').append('<p><img src="'+data.dayR[i].photos+'" /><a href="'+data.dayR[i].profileUrl+'">'+data.dayR[i].displayName+'</a></p>');
+            }
+          });
+      });
+
+      // 함수 실행
+      todayUser();
+      currentUserNumber();
+      dateRegister();
+
+      // 오늘 가입자, 이번 달 가입자 받기
+      function dateRegister(){
+        var date = new Date();
+        var month = date.getMonth()+1;
+        var year = date.getFullYear();
+        socket.emit('date register', { year: year, month: month });
+        }
+
+      // 현재 접속자 나타내는 함수
+      function currentUserNumber(){
+        socket.emit('current user');
+      }
+      setInterval("currentUserNumber()", 3000);
+
+      // 오늘 접속자 목록 가져오기
+      function todayUser(){
+        var d = new Date();
+        var year = d.getFullYear();
+        var month = addZeros(d.getMonth()+1, 2);
+        var date = addZeros(d.getDate(), 2);
+        console.log(year+'-'+month+'-'+date);
+        socket.emit('today user', {year: year, month: month, date: date});
+      }
+
+      // 시계 자릿수 맞춰주기
+      function addZeros(num, digit) {
+    	  var zero = '';
+    	  num = num.toString();
+    	  if (num.length < digit) {
+    	    for (i = 0; i < digit - num.length; i++) {
+    	      zero += '0';
+    	    }
+    	  }
+    	  return zero + num;
+      }
+
+      // 신고 목록 삭제
+      function delete_repo(num) {
+        console.log(num);
+        socket.emit('delete report', {num: num});
+        window.location.reload(true);
+      }
+
+      // 1일 정지
+      function stop_one(authId, repo_class, repo_num) {
+        console.log('one day stop');
+        socket.emit('stop user', {authId: authId, repo_class: repo_class, term: '1', repo_num: repo_num});
+        window.location.reload(true);
+      }
+      // 3일 정지
+      function stop_three(authId, repo_class, repo_num) {
+        console.log('three day stop');
+        socket.emit('stop user', {authId: authId, repo_class: repo_class, term: '3', repo_num: repo_num});
+        window.location.reload(true);
+      }
+      // 7일 정지
+      function stop_seven(authId, repo_class, repo_num) {
+        console.log('seven day stop');
+        socket.emit('stop user', {authId: authId, repo_class: repo_class, term: '7', repo_num: repo_num});
+        window.location.reload(true);
+      }
+      // 한달 정지
+      function stop_thirty(authId, repo_class, repo_num) {
+        console.log('thirty day stop');
+        socket.emit('stop user', {authId: authId, repo_class: repo_class, term: '30', repo_num: repo_num});
+        window.location.reload(true);
+      }
+      // 영구 정지
+      function stop_infinite(authId, repo_class, repo_num) {
+        console.log('infinite stop');
+        socket.emit('stop user', {authId: authId, repo_class: repo_class, term: '100', repo_num: repo_num});
+        window.location.reload(true);
+      }
+
+      // 정지 풀기
+      function releaseUser(num) {
+        console.log('release user');
+        socket.emit('release user', { num: num });
+        window.location.reload(true);
+      }
+
+      // 디비에서 받아온 Month 숫자로 바꾸기
+      function switchMonth(date) {
+      switch (date) {
+          case 'Jen' : date = "01"; return date;
+          case 'Feb' : date = "02"; return date;
+          case 'Mar' : date = "03"; return date;
+          case 'Apr' : date = "04"; return date;
+          case 'May' : date = "05"; return date;
+          case 'Jun' : date = "06"; return date;
+          case 'Jul' : date = "07"; return date;
+          case 'Aug' : date = "08"; return date;
+          case 'Sep' : date = "09"; return date;
+          case 'Oct' : date = "10"; return date;
+          case 'Nov' : date = "11"; return date;
+          case 'Dec' : date = "12"; return date;
+        }
+      }
+
+    </script>
+  </head>
+  <body>
+    <div id="container">
+      <div class="header">
+        <h1>Facechat Admin Page</h1>
+      </div>
+
+      <div class="userList">
+        <div class="listContainer All">
+          <div class="listHeader _All">
+            <h2>전체가입자</h2>
+          </div>
+          <!-- 가입자 목록, 수 -->
+          <div class="listContent _All">
+            <h3>가입자 수: <%= userinfo.length %></h3>
+            <h3>남:
+            <%
+              var male=0;
+              for(var i=0; i<userinfo.length; i++){
+                if(userinfo[i].gender === 'male') {
+                  male++;
+                }
+              }
+            %>
+            <%= male %>
+            여: <%= userinfo.length-male %>
+
+          </h3>
+
+            <%
+              for(var i=0; i<userinfo.length; i++){
+                var item = userinfo[i];
+            %>
+            <div class="listUser"><img src="<%= item.photos %>"><a href="<%= item.profileUrl %>" target="_balnk"><p><%= item.displayName %></p></a></div>
+            <%
+              }
+            %>
+          </div>
+        </div>
+        <div class="listContainer Month" >
+          <div class="listHeader _Month">
+            <h2>이번달가입자</h2>
+            <div id="monthRegister">
+
+            </div>
+          </div>
+        </div>
+        <div class="listContainer Today">
+          <div class="listHeader _Today">
+            <h2>오늘가입자</h2>
+            <div id="dayRegister">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="currentUserList">
+        <div class="listContainer CurrentConn">
+          <div class="listHeader _CurrentConn">
+            <h2>현재접속자</h2>
+          </div>
+          <!-- 현재 접속자 수 -->
+          <div class="listContent CurrentConn">
+            <div id="currentusernum"></div>
+          </div>
+        </div>
+        <div class="listContainer TodayConn" >
+          <div class="listHeader _TodayConn">
+            <h2>오늘접속로그</h2>
+          </div>
+        <!-- 오늘 접속 로그 -->
+        <div class="listContent CurrentConn">
+          <div id="todayuser"></div>
+        </div>
+      </div>
+      </div>
+      <div class="reportUserList">
+        <div class="reportContainer">
+          <div class="listHeader _ReportList">
+            <h2>신고 목록</h2>
+          </div>
+          <div class="listContent ReportList">
+            <h3>신고 수: <%= userrepo.length %></h3>
+            <div class="repoList_wrapper">
+              <%
+                for(var i=0; i<userrepo.length; i++){
+                  var repoItem = userrepo[i];
+              %>
+              <div class="repo_personal_wrapper">
+                <div class="repoList">
+                  <%
+                    for(var j=0; j<userinfo.length; j++) {
+                      if(repoItem.from_id === userinfo[j].authId) {
+                        var repoItemFrom = userinfo[j];
+                  %>
+                  <img src="<%= repoItemFrom.photos %>"><a href="<%= repoItemFrom.profileUrl %>" target="_blank"><%= repoItemFrom.displayName %></a>
+                  <img src="/img/right-arrow.png" />
+                  <%
+                      }
+                    }
+                  %><img src="<%= repoItem.photos %>"><a href="<%= repoItem.profileUrl %>" target="_blank"><%= repoItem.displayName %></a>
+                  <p><%= repoItem.date %></p>
+                </div>
+                <div class="repoList_chat" style="display= none">
+                  <a href=# onclick=this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';>
+                    채팅 목록
+                  </a><div class="repoFrom_chat" style="display: none">
+                    <h4>신고한 유저</h4>
+                  <%
+                    for(var j=0; j<userchat.length; j++){
+                      var chatItem = userchat[j];
+                      if(repoItem.from_id === chatItem.from_id && repoItem.to_id === chatItem.to_id) {
+                  %>
+                    <p>
+                      <%= chatItem.content %>
+                    </p>
+                  <%
+                      }
+                    }
+                  %>
+                  </div>
+                  <a href=# onclick=this.nextSibling.style.display=(this.nextSibling.style.display=='none')?'block':'none';>
+                    채팅 목록
+                  </a><div class="repoTo_chat" style="display: none">
+                    <h4>신고당한 유저</h4>
+                  <%
+                    for(var j=0; j<userchat.length; j++){
+                      var chatItem = userchat[j];
+                      if(repoItem.to_id === chatItem.from_id && repoItem.from_id === chatItem.to_id) {
+                  %>
+                      <p>
+                        <%= chatItem.content %>
+                      </p>
+                  <%
+                      }
+                    }
+                  %>
+                  </div>
+                  <div class="delete_button">
+                    <button onclick="delete_repo('<%= repoItem.num %>', '<%= repoItem.repo_class %>')">삭제하기</button>
+                    <button onclick="stop_one('<%= repoItem.to_id %>', '<%= repoItem.repo_class %>', '<%= repoItem.num %>')">1일정지</button>
+                    <button onclick="stop_three('<%= repoItem.to_id %>', '<%= repoItem.repo_class %>', '<%= repoItem.num %>')">3일정지</button>
+                    <button onclick="stop_seven('<%= repoItem.to_id %>', '<%= repoItem.repo_class %>', '<%= repoItem.num %>')">7일정지</button>
+                    <button onclick="stop_thirty('<%= repoItem.to_id %>', '<%= repoItem.repo_class %>', '<%= repoItem.num %>')">한달정지</button>
+                    <button onclick="stop_infinite('<%= repoItem.to_id %>', '<%= repoItem.repo_class %>', '<%= repoItem.num %>')">영구정지</button>
+                  </div>
+                </div>
+              </div>
+              <%
+                }
+              %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="logo" style="text-align: center">
+        <div class="listHeader stopHeader">
+          <h2>정지된 유저</h2>
+        </div>
+        <div class="listContent stopContent">
+          <h3>정지유저 수: <%= stopuser.length %></h3>
+          <div class="stopUserListContent">
+            <%
+              for(var i=0;i<stopuser.length;i++) {
+                var item = stopuser[i];
+            %>
+              <div class="stopUserList">
+                <%
+                  for(var j=0;j<userinfo.length;j++) {
+                    if(item.authId === userinfo[j].authId) {
+                      var info = userinfo[j];
+                %>
+                <img src="<%= info.photos %>" align="center"><a href="<%= info.profileUrl %>"><b><%= info.displayName %></b></a>
+                <p>정지시작일: <%=  item.date %></p>
+                <p>정지기간: <%= item.stop_term %>일</p>
+                <p>id: <%= item.authId %></p>
+                <button onclick="releaseUser('<%= item.num %>')">정지 풀기</button>
+                <%
+                    }
+                  }
+                %>
+              </div>
+            <%
+              }
+            %>
+          </div>
+        </div>
+      </div>
+  </body>
+</html>

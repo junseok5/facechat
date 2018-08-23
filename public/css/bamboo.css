@@ -1,0 +1,315 @@
+@import url(http://fonts.googleapis.com/earlyaccess/hanna.css);
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css);
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+@import url('http://fonts.googleapis.com/css?family=Lato');
+
+#console {
+  background-color: #333;
+  color: #fff;
+  padding: 2px 5px;
+  font-size: 11px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+#container {
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  background-color: #f9f9f9;
+  border-radius: 3px 3px 0 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+#cover {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(255,255,255,0);
+  z-index: 600;
+}
+
+/*	Header
+	=========================== */
+
+header.primary {
+  height: 46px;
+  background-color: #6799FF;
+  position: relative;
+  /*border-bottom: solid 1px #f8f8f8;*/
+  border-radius: 3px 3px 0 0;
+  text-align: center;
+  padding-top: 5px;
+}
+header.primary img {
+  height: 34px;
+  padding-top: 2px;
+}
+/*
+header.primary .icon {
+  z-index: 22;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 49px;
+  width: 49px;
+  font-size: 26px;
+  line-height: 49px;
+  text-align: center;
+  color: #fff;
+}
+
+header.primary .side {
+  left: auto;
+  right: 0;
+}
+
+header.primary hgroup { text-align: center }
+
+header.primary hgroup h1 {
+  z-index: 20;
+  position: absolute;
+  top: 0;
+  left: 50px;
+  right: 50px;
+  color: #fff;
+  margin: 0;
+  line-height: 49px;
+  margin: 0;
+  font-size: 22px;
+}
+*/
+#content {
+  /*padding: 5px 35px 25px 35px;*/
+  text-align: center;
+  font-family: 'Nanum Gothic', serif;
+  font-weight: 600;
+  color: #686868;
+  height: 535px;
+}
+.intro {
+  opacity: 0.8;
+}
+.intro p {
+  padding-bottom: 5px;
+}
+
+.facebook_login {
+  padding-top: 15px;
+}
+
+.content_login {
+  text-align: center;
+  padding-top: 0px;
+  font-family: 'Nanum Gothic', serif;
+  height: 565px;
+}
+
+.my_profile {
+  border: 6px solid #fff;
+  padding: 0px 0px 18px 0px;
+  background-color: rgba(249,249,249,0.9);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.my_profile h2 {
+  color: #949494;
+}
+.my_profile a,
+.my_profile a:hover,
+.my_profile a:visited,
+.my_profile a:focus {
+  text-decoration: none;
+  color: #5E5E5E;
+  font-weight: 600;
+  font-size: 22px;
+  font-family: 'Nanum Gothic Coding', serif;
+}
+.my_name img {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  -webkit-border-radius: 100%;
+  -moz-border-radius: 100%;
+  -ms-border-radius: 100%;
+  background-color: rgba(255,255,255,0.9);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.chat_start {
+  padding-top:30px;
+  height: 200px;
+  border: 6px solid #fff;
+}
+.chat_start a {
+  font-size: 25px;
+}
+.chat_start p {
+  font-size: 16px;
+  font-weight: 600;
+  opacity: 0.6;
+}
+/*  content
+  =========================== */
+
+.chat_button {
+   border: 1px solid #39579b;
+   background: #39579b;
+   background: -webkit-gradient(linear, left top, left bottom, from(#39579b), to(#39579b));
+   background: -webkit-linear-gradient(top, #39579b, #39579b);
+   background: -moz-linear-gradient(top, #39579b, #39579b);
+   background: -ms-linear-gradient(top, #39579b, #39579b);
+   background: -o-linear-gradient(top, #39579b, #39579b);
+   background-image: -ms-linear-gradient(top, #39579b 0%, #39579b 100%);
+   padding: 9px 35px;
+   -webkit-border-radius: 6px;
+   -moz-border-radius: 6px;
+   border-radius: 6px;
+   -webkit-box-shadow: rgba(255,255,255,0.4) 0 1px 0, inset rgba(255,255,255,0.4) 0 1px 0;
+   -moz-box-shadow: rgba(255,255,255,0.4) 0 1px 0, inset rgba(255,255,255,0.4) 0 1px 0;
+   box-shadow: rgba(255,255,255,0.4) 0 1px 0, inset rgba(255,255,255,0.4) 0 1px 0;
+   text-shadow: #ffffff 0 1px 0;
+   color: #ffffff;
+   font-size: 17px;
+   font-family: helvetica, serif;
+   text-decoration: none;
+   vertical-align: middle;
+ }
+.chat_button:hover {
+   border: 1px solid #91dcff;
+   text-shadow: #ffffff 0 1px 0;
+   background: #005c99;
+   background: -webkit-gradient(linear, left top, left bottom, from(#0079c9), to(#005c99));
+   background: -webkit-linear-gradient(top, #0079c9, #005c99);
+   background: -moz-linear-gradient(top, #0079c9, #005c99);
+   background: -ms-linear-gradient(top, #0079c9, #005c99);
+   background: -o-linear-gradient(top, #0079c9, #005c99);
+   background-image: -ms-linear-gradient(top, #0079c9 0%, #005c99 100%);
+   color: #fff;
+  }
+.chat_button:active {
+   text-shadow: #ffffff 0 1px 0;
+   border: 1px solid #00679e;
+   background: #004b73;
+   background: -webkit-gradient(linear, left top, left bottom, from(#004d80), to(#005c99));
+   background: -webkit-linear-gradient(top, #004d80, #004b73);
+   background: -moz-linear-gradient(top, #004d80, #004b73);
+   background: -ms-linear-gradient(top, #004d80, #004b73);
+   background: -o-linear-gradient(top, #004d80, #004b73);
+   background-image: -ms-linear-gradient(top, #004d80 0%, #004b73 100%);
+   color: #fff;
+  }
+
+ #chat_view {
+   background-color: green;
+   width: 100%;
+   height: 330px;
+ }
+
+ /*
+              login fail
+ ============================= */
+ .content_b {
+   text-align: center;
+   padding-top: 10px;
+   height: 200px;
+   font-family: 'Lato', sans-serif;
+ }
+
+ /* Stopped User */
+ .stopUserView {
+   text-align: center;
+   padding-top: 10px;
+   height: 200px;
+ }
+
+ /* gender option */
+ .gender_option {
+  margin: 0 auto;
+ }
+
+ .gender_option input[type=radio]{
+   width:2em;
+   height:2em;
+ }
+ #label_m {
+   color: #1266FF;
+   font-size: 20px;
+   margin-right: 20px;
+ }
+ #label_f {
+   color: #FF73B8;
+   font-size: 20px;
+ }
+
+  #gender_submit {
+   width: 100px;
+   height: 35px;
+   background-color: #39579b;
+   color: #fff;
+   font-size: 22px;
+   padding: 5px 0px 0px 0px;
+   margin: 15px auto;
+   border-radius: 5px;
+ }
+
+ @media only screen and (min-width: 768px) {
+
+    /*	Bamboo
+    	=========================== */
+
+    #container {
+      width: 768px;
+      overflow: auto;
+      border-radius: 2
+      %;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #scroller { background-color: #f9f9f9; }
+
+    #content {
+      text-align: center;
+      padding: 5px 35px 25px 35px;
+    }
+
+    /*	Header
+    	=========================== */
+
+    header.primary {
+      height: 60px;
+      background: transparent;
+      background-color: #6799FF;
+      border: none;
+      text-align: center;
+    }
+    header.primary img {
+      padding-top: 7px;
+      height: 40px;
+    }
+    /*
+    header.primary .icon { display: none }
+
+    header.primary hgroup {
+      text-align: center;
+      padding: 20px 20px 20px 20px
+    }
+
+    header.primary hgroup h1 {
+      position: relative;
+      left: 0;
+      right: auto;
+      font-size: 22px;
+      line-height: 20px;
+    }
+    */
+}

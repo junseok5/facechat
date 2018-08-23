@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  	<meta name="msapplication-tap-highlight" content="no" />
+    <title>Facechat</title>
+    <link rel="shortcut icon" type="image⁄x-icon" href="img/logo2.png">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+  	<meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="css/bamboo.css">
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script>
+      var dateString = '<%= date %>';
+      var dateArr = dateString.split(" ");
+      var term = '<%= term %>';
+      switch (dateArr[1]) {
+        case 'Jen' : dateArr[1] = "01"; break;
+        case 'Feb' : dateArr[1] = "02"; break;
+        case 'Mar' : dateArr[1] = "03"; break;
+        case 'Apr' : dateArr[1] = "04"; break;
+        case 'May' : dateArr[1] = "05"; break;
+        case 'Jun' : dateArr[1] = "06"; break;
+        case 'Jul' : dateArr[1] = "07"; break;
+        case 'Aug' : dateArr[1] = "08"; break;
+        case 'Sep' : dateArr[1] = "09"; break;
+        case 'Oct' : dateArr[1] = "10"; break;
+        case 'Nov' : dateArr[1] = "11"; break;
+        case 'Dec' : dateArr[1] = "12"; break;
+      }
+
+      $(document).ready(function(){
+        if(term < 30) {
+          $('#stopContent').append('<p>회원님은 현재 타 유저의 신고로 인해 이용이 정지된 상태입니다.</p><p>정지 기간: '+dateArr[3]+"."+dateArr[1]+"."+dateArr[2]+' 이 후로 <%= term %>일간</p>');
+        }
+        if(term === '30') {
+          $('#stopContent').append('<p>회원님은 현재 타 유저의 신고로 인해 이용이 정지된 상태입니다.</p><p>정지 기간: '+dateArr[3]+"."+dateArr[1]+"."+dateArr[2]+' 이 후로 한달간</p>');
+        }
+        if(term === '100') {
+          $('#stopContent').append('<p>회원님은 현재 불건전한 행동으로 인해 영구 정지된 상태입니다.</p>');
+        }
+      });
+
+    </script>
+  </head>
+  <body>
+    <div id="container">
+      <% include ./header.ejs %>
+      <div class="stopUserView">
+        <h2>이용 정지된 유저</h2>
+        <div id="stopContent">
+
+        </div>
+        <a href="/" class="chat_button">돌아가기</a>
+      </div>
+    </div>
+  </body>
+</html>
