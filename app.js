@@ -31,7 +31,7 @@ conn.query('set names utf8', function(error, result, fields){
 
 // Set Session
 app.use( session( {
-    secret : "@#$adf4e2!$#@#$@#$34#@$!5647^(*%&(%))",
+    secret : "",
     resave : false,
     name   : "sessionId",
     saveUninitialized : false
