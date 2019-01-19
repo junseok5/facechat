@@ -1,21 +1,18 @@
 # Facebook-chatting
-Personal project
 
-Simple Facebook chatting program
+Facebook chatting service.
 
-Facebook random chatting project
+## 스택
 
-Features
-Facebook-login
-1:1 chatting
+### Front-end
+- Html5
+- Css3
+- Javascript
+- JQuery
 
-Front-end
-html5
-css3
-javascript, jquery
-
-Back-end
-Node.js express
-mysql
-passport-facebook
-socket.io
+### Back-end
+- Node.js
+- Express
+- Mysql
+- Passport-facebook
+- Socket.io
